@@ -28,7 +28,7 @@ cd carewell_ehr
 ## Docker Setup
 Build and run the Docker containers using Docker Compose.
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This command will:
@@ -87,13 +87,13 @@ carewell-ehr/
 Starting the Application
 To start the application, run the following command:
 ```bash
-docker-compose up
+docker compose up --build
 ```
 
 ## Stopping the Application
 To stop the application, run the following command:
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## API Endpoints
