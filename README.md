@@ -7,6 +7,11 @@ This project is a Electronic Health Record system for medical clinics, built usi
 - Generate medical billing invoices in PDF format
 - Use a styled template for the PDF invoices
 - Fetch patient and invoice data from a MySQL database
+- Add patient
+- Search patient
+- List of patients
+- Create encounter/Invoice
+- See list of invoices of patients
 - Run the entire application in Docker containers
 
 ## Prerequisites
