@@ -4,15 +4,32 @@ This project is a Electronic Health Record system for medical clinics, built usi
 
 ## Features
 
-- Generate medical billing invoices in PDF format
-- Use a styled template for the PDF invoices
-- Fetch patient and invoice data from a MySQL database
+### General
+
+- Run the entire application in Docker containers
+- Add navigation menu with Home and Doctors navigation items
+
+### Patient Management
+
 - Add patient
 - Search patient
 - List of patients
 - Create encounter/Invoice
 - See list of invoices of patients
-- Run the entire application in Docker containers
+
+### Doctor Management
+
+- Create Doctor
+- List Doctors
+- Select Doctor during Encounter creation
+
+### Billing and Invoicing
+
+- Generate medical billing invoices in PDF format
+- Use a styled template for the PDF invoices
+- Fetch patient and invoice data from a MySQL database
+- Create Encounter with Invoice generation
+- Replace invoice download with invoice print
 
 ## Prerequisites
 
@@ -57,6 +74,7 @@ carewell-ehr/
 │   ├── models/
 │   │   └── db.js
 │   ├── routes/
+│   │   ├── doctors.js
 │   │   ├── patients.js
 │   │   ├── encounters.js
 │   │   ├── invoices.js
@@ -68,10 +86,14 @@ carewell-ehr/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── CreateInvoiceDialog.js
+│   │   │   ├── DoctorPage.js
+│   │   │   ├── DownloadInvoiceDialog.js
+│   │   │   ├── HomePage.js
 │   │   │   ├── InvoiceListDialog.js
 │   │   │   ├── PatientForm.js
 │   │   │   └── PatientList.js
 │   │   │   └── PatientListItem.js
+│   │   │   └── Patients.js
 │   │   │   └── SearchBar.js
 │   │   │   └── TableHeader.js
 │   │   ├── utils/
