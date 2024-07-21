@@ -12,7 +12,7 @@ services:
       - ./db_init:/docker-entrypoint-initdb.d
     ports:
       - "3307:3306"
-
+      
   backend:
     build: ./backend
     volumes:

@@ -13,8 +13,11 @@ CREATE TABLE IF NOT EXISTS patients (
 CREATE TABLE IF NOT EXISTS encounters (
     id INT AUTO_INCREMENT PRIMARY KEY,
     patient_id INT NOT NULL,
+    doctor_id INT,
+    is_invoiced BOOLEAN DEFAULT FALSE,
     date DATETIME NOT NULL,
-    FOREIGN KEY (patient_id) REFERENCES patients(id)
+    FOREIGN KEY (patient_id) REFERENCES patients(id),
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
 
 CREATE TABLE IF NOT EXISTS invoices (
@@ -23,4 +26,10 @@ CREATE TABLE IF NOT EXISTS invoices (
     amount DECIMAL(10, 2) NOT NULL,
     date DATETIME NOT NULL,
     FOREIGN KEY (encounter_id) REFERENCES encounters(id)
+);
+
+CREATE TABLE IF NOT EXISTS doctors (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  contact VARCHAR(255) NOT NULL
 );

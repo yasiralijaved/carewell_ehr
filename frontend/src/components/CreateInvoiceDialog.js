@@ -1,50 +1,30 @@
 import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
 import axios from 'axios';
 
-const CreateInvoiceDialog = ({ open, onClose, patientId, onInvoiceCreated }) => {
+const InvoiceDialog = ({ open, onClose, encounterId, onInvoiceCreated }) => {
   const [amount, setAmount] = useState('');
-  const [error, setError] = useState('');
-
-  const handleAmountChange = (event) => {
-    setAmount(event.target.value);
-    setError('');
-  };
 
   const handleCreateInvoice = async () => {
-    if (!amount || isNaN(amount) || Number(amount) <= 0) {
-      setError('Please enter a valid amount');
-      return;
-    }
-
     try {
-      const response = await axios.post('/api/encounters/create', { patientId, amount });
-      onInvoiceCreated(response.data.invoiceId);
+      await axios.post('/api/invoices', { encounterId, amount });
+      onInvoiceCreated();
       onClose();
     } catch (error) {
-      console.error('There was an error creating the encounter and invoice!', error);
-      setError('Failed to create invoice');
+      console.error('Error creating invoice:', error);
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} fullWidth>
       <DialogTitle>Create Invoice</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Please enter the amount for the invoice.
-        </DialogContentText>
         <TextField
-          autoFocus
-          margin="dense"
-          id="amount"
           label="Amount"
-          type="number"
-          fullWidth
           value={amount}
-          onChange={handleAmountChange}
-          error={!!error}
-          helperText={error}
+          onChange={(e) => setAmount(e.target.value)}
+          fullWidth
+          margin="normal"
         />
       </DialogContent>
       <DialogActions>
@@ -59,4 +39,4 @@ const CreateInvoiceDialog = ({ open, onClose, patientId, onInvoiceCreated }) => 
   );
 };
 
-export default CreateInvoiceDialog;
+export default InvoiceDialog;

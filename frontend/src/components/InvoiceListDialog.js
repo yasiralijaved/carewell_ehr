@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText, IconButton, Typography, Box, TextField, InputAdornment } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText, IconButton, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import PrintIcon from '@mui/icons-material/Print';
 import axios from 'axios';
 import { formatDate } from '../utils/dateUtils';
 
@@ -27,19 +27,20 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleDownloadPdf = async (invoiceId) => {
+  const handlePrint = async (invoiceId) => {
     try {
       const response = await axios.get(`/api/pdf/generate-invoice/${invoiceId}`, {
         responseType: 'blob',
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'invoice.pdf');
-      document.body.appendChild(link);
-      link.click();
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
+      const newWindow = window.open(url);
+      if (newWindow) {
+        newWindow.addEventListener('load', () => {
+          newWindow.print();
+        });
+      }
     } catch (error) {
-      console.error('Error downloading PDF:', error);
+      console.error('Error printing PDF:', error);
     }
   };
 
@@ -75,8 +76,8 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
                 primary={`Amount: PKR ${invoice.amount}`}
                 secondary={`Date: ${formatDate(invoice.date)}`}
               />
-              <IconButton size="small" color="default" onClick={() => handleDownloadPdf(invoice.id)}>
-                <PictureAsPdfIcon />
+              <IconButton size="small" color="default" onClick={() => handlePrint(invoice.id)}>
+                <PrintIcon />
               </IconButton>
             </ListItem>
           ))}
