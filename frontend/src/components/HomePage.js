@@ -13,6 +13,7 @@ const HomePage = () => {
           </Typography>
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/doctors">Doctors</Button>
+          <Button color="inherit" component={Link} to="/database">Database Management</Button>
         </Toolbar>
       </AppBar>
       <Patients />

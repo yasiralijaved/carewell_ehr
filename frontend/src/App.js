@@ -6,6 +6,7 @@ import theme from './theme';
 
 import HomePage from './components/HomePage';
 import DoctorPage from './components/DoctorPage';
+import DatabaseManagementPage from './components/DatabaseManagementPage';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={HomePage} />
                     <Route path="/doctors" component={DoctorPage} />
+                    <Route path="/database" component={DatabaseManagementPage} />
                 </Switch>
             </Router>
         </ThemeProvider>
