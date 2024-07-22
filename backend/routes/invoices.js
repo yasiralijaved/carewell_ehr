@@ -18,7 +18,13 @@ module.exports = () => {
   router.get('/patient/:patientId', async (req, res) => {
     const { patientId } = req.params;
     try {
-      const [rows] = await db.execute('SELECT * FROM invoices WHERE encounter_id IN (SELECT id FROM encounters WHERE patient_id = ?)', [patientId]);
+      const [rows] = await db.execute(`
+        SELECT invoices.*, doctors.name AS doctor_name
+        FROM invoices
+        JOIN encounters ON invoices.encounter_id = encounters.id
+        JOIN doctors ON encounters.doctor_id = doctors.id
+        WHERE encounters.patient_id = ?
+      `, [patientId]);
       res.json(rows);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -26,16 +32,32 @@ module.exports = () => {
   });
 
   // Get an invoice by ID
-  router.get('/:id', async (req, res) => {
+  // router.get('/:id', async (req, res) => {
+  //   const { id } = req.params;
+  //   try {
+  //     const [rows] = await db.execute('SELECT * FROM invoices WHERE id = ?', [id]);
+  //     if (rows.length === 0) {
+  //       return res.status(404).json({ error: 'Invoice not found' });
+  //     }
+  //     res.json(rows[0]);
+  //   } catch (err) {
+  //     res.status(500).json({ error: err.message });
+  //   }
+  // });
+  router.get('/:patientId', async (req, res) => {
     const { id } = req.params;
     try {
-      const [rows] = await db.execute('SELECT * FROM invoices WHERE id = ?', [id]);
-      if (rows.length === 0) {
-        return res.status(404).json({ error: 'Invoice not found' });
-      }
-      res.json(rows[0]);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+      const [results] = await db.query(`
+        SELECT invoices.*, doctors.name AS doctor_name
+        FROM invoices
+        JOIN encounters ON invoices.encounter_id = encounters.id
+        JOIN doctors ON encounters.doctor_id = doctors.id
+        WHERE invoices.id = ?
+      `, [id]);
+      res.json(results[0]);
+    } catch (error) {
+      console.error('Error fetching invoice:', error);
+      res.status(500).json({ error: 'Error fetching invoice' });
     }
   });
 

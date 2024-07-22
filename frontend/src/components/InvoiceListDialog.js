@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText, IconButton, TextField, InputAdornment } from '@mui/material';
+import { 
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  InputAdornment,
+  CircularProgress,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Box
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
+import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { formatDate } from '../utils/dateUtils';
 
 const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
   const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -15,8 +30,10 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
         const response = await axios.get(`/api/invoices/patient/${patientId}`);
         const sortedInvoices = (response.data || []).sort((a, b) => new Date(b.date) - new Date(a.date));
         setInvoices(sortedInvoices);
+        setLoading(false);
       } catch (error) {
         console.error('There was an error fetching the invoices!', error);
+        setLoading(false);
       }
     };
 
@@ -46,15 +63,37 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
 
   const filteredInvoices = invoices.filter((invoice) =>
     invoice.amount.toString().includes(searchTerm) || 
-    formatDate(invoice.date).includes(searchTerm)
+    formatDate(invoice.date).includes(searchTerm) || 
+    invoice.doctor_name.includes(searchTerm)
   );
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Invoices</DialogTitle>
+      <DialogTitle>Invoices
+        <Box
+          sx={{
+            position: 'absolute',
+            right: 15,
+            top: 15,
+            backgroundColor: 'white',
+            borderRadius: '50%',
+            width: 26,
+            height: 26,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'black',
+            cursor: 'pointer',
+            boxShadow: 3
+          }}
+          onClick={onClose}
+        >
+          <CloseIcon sx={{ width: 15, height: 15 }} />
+        </Box>
+      </DialogTitle>
       <DialogContent>
-        <TextField
-          placeholder="Search by amount or date"
+      <TextField
+          placeholder="Search by amount, date, doctor or invoice id"
           value={searchTerm}
           onChange={handleSearchChange}
           InputProps={{
@@ -69,25 +108,34 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
           size="small"
           style={{ marginBottom: '20px' }}
         />
-        <List>
-          {filteredInvoices.map((invoice) => (
-            <ListItem key={invoice.id} divider>
-              <ListItemText
-                primary={`Amount: PKR ${invoice.amount}`}
-                secondary={`Date: ${formatDate(invoice.date)}`}
-              />
-              <IconButton size="small" color="default" onClick={() => handlePrint(invoice.id)}>
-                <PrintIcon />
-              </IconButton>
-            </ListItem>
-          ))}
-        </List>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          filteredInvoices.length > 0 ? (
+            filteredInvoices.map((invoice) => (
+              <Card key={invoice.id} style={{ marginBottom: '15px' }}>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body1"><strong>Invoice ID:</strong> {invoice.id}</Typography>
+                      <Typography variant="body1"><strong>Amount:</strong> ${invoice.amount}</Typography>
+                      <Typography variant="body1"><strong>Date:</strong> {formatDate(invoice.date)}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body1"><strong>Doctor:</strong> {invoice.doctor_name}</Typography>
+                      <IconButton size="small" color="default" onClick={() => handlePrint(invoice.id)}>
+                        <PrintIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Typography variant="body1">No invoices found.</Typography>
+          )
+        )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Close
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

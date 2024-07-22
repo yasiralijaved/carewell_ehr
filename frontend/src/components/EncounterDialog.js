@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PrintIcon from '@mui/icons-material/Print';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl, Box } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 
 const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
@@ -63,7 +64,28 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>{invoiceId ? 'Invoice Created' : 'Create Encounter'}</DialogTitle>
+      <DialogTitle>{invoiceId ? 'Invoice Created' : 'Create Encounter'}
+        <Box
+          sx={{
+            position: 'absolute',
+            right: 15,
+            top: 15,
+            backgroundColor: 'white',
+            borderRadius: '50%',
+            width: 26,
+            height: 26,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'black',
+            cursor: 'pointer',
+            boxShadow: 3
+          }}
+          onClick={onClose}
+        >
+          <CloseIcon sx={{ width: 15, height: 15 }} />
+        </Box>
+      </DialogTitle>
       <DialogContent>
         {invoiceId ? (
           <Box mt={2}>
@@ -140,9 +162,6 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Close
-        </Button>
         {!invoiceId && (
           <Button onClick={handleSubmit} color="primary">
             Create Encounter
