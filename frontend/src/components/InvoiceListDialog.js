@@ -118,7 +118,7 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <Typography variant="body1"><strong>Invoice ID:</strong> {invoice.id}</Typography>
-                      <Typography variant="body1"><strong>Amount:</strong> ${invoice.amount}</Typography>
+                      <Typography variant="body1"><strong>Amount:</strong> PKR {invoice.amount}</Typography>
                       <Typography variant="body1"><strong>Date:</strong> {formatDate(invoice.date)}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>

@@ -36,6 +36,22 @@ module.exports = () => {
     }
   });
 
+  // Get un-invoiced encounters by patient ID
+  router.get('/uninvoiced/:patientId', async (req, res) => {
+    const { patientId } = req.params;
+    try {
+      const [rows] = await db.execute(`
+        SELECT encounters.*, doctors.name AS doctor_name
+        FROM encounters
+        JOIN doctors ON encounters.doctor_id = doctors.id
+        WHERE encounters.patient_id = ? AND encounters.is_invoiced = FALSE
+      `, [patientId]);
+      res.json(rows);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Route to update an encounter's is_invoiced status
   router.put('/:encounterId/invoiced', async (req, res) => {
     const { encounterId } = req.params;

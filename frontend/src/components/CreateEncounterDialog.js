@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import PrintIcon from '@mui/icons-material/Print';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl, Box } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl, Box, Typography, Grid, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import axios from 'axios';
+import CreateInvoiceDialog from './CreateInvoiceDialog';
 
-const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
+const CreateEncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
   const [doctorId, setDoctorId] = useState('');
   const [doctors, setDoctors] = useState([]);
   const [createInvoice, setCreateInvoice] = useState(false);
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10)); // Default to today's date
+  const [encounterDetails, setEncounterDetails] = useState(null);
   const [invoiceId, setInvoiceId] = useState(null);
+  const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (open) {
       fetchDoctors();
+      resetForm();
     }
   }, [open]);
 
@@ -27,13 +33,46 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
     }
   };
 
+  const resetForm = () => {
+    setDoctorId('');
+    setCreateInvoice(false);
+    setAmount('');
+    setDate(new Date().toISOString().slice(0, 10));
+    setEncounterDetails(null);
+    setInvoiceId(null);
+    setError('');
+  };
+
   const handleSubmit = async () => {
+    if (createInvoice && !amount) {
+      setError('Invoice amount is required.');
+      return;
+    }
+
+    setError(''); // Clear any previous error
+
     try {
-      const encounterResponse = await axios.post('/api/encounters/', { patientId: patient.id, doctorId, date, is_invoiced: createInvoice });
-      const encounterId = encounterResponse.data.encounterId;
+      const encounterResponse = await axios.post('/api/encounters/', {
+        patientId: patient.id,
+        doctorId,
+        date,
+        is_invoiced: createInvoice,
+      });
+      const newEncounterId = encounterResponse.data.encounterId;
+
+      const encounterDetail = {
+        id: newEncounterId,
+        patientId: patient.id,
+        patient_name: patient.name,
+        doctor_id: doctorId,
+        doctor_name: doctors.find((doc) => doc.id === doctorId)?.name || '',
+        date: new Date(date).toLocaleDateString(),
+      };
+
+      setEncounterDetails(encounterDetail);
 
       if (createInvoice) {
-        const invoiceResponse = await axios.post('/api/invoices/', { encounterId, amount });
+        const invoiceResponse = await axios.post('/api/invoices/', { encounterId: newEncounterId, amount });
         setInvoiceId(invoiceResponse.data.id);
       } else {
         setInvoiceId(null);
@@ -43,6 +82,14 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
     } catch (error) {
       console.error('Error creating encounter and/or invoice:', error);
     }
+  };
+
+  const handleOpenInvoiceDialog = () => {
+    setInvoiceDialogOpen(true);
+  };
+
+  const handleCloseInvoiceDialog = () => {
+    setInvoiceDialogOpen(false);
   };
 
   const handlePrint = async () => {
@@ -64,7 +111,8 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>{invoiceId ? 'Invoice Created' : 'Create Encounter'}
+      <DialogTitle>
+        {encounterDetails ? 'Encounter Created' : invoiceId ? 'Invoice Created' : 'Create Encounter'}
         <Box
           sx={{
             position: 'absolute',
@@ -79,7 +127,7 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
             justifyContent: 'center',
             color: 'black',
             cursor: 'pointer',
-            boxShadow: 3
+            boxShadow: 3,
           }}
           onClick={onClose}
         >
@@ -87,11 +135,39 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
         </Box>
       </DialogTitle>
       <DialogContent>
-        {invoiceId ? (
-          <Box mt={2}>
-            <Button onClick={handlePrint} color="primary" startIcon={<PrintIcon />}>
-              Print Invoice
-            </Button>
+        {encounterDetails ? (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="body1"><strong>Encounter ID:</strong> {encounterDetails.id}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body1"><strong>Patient ID:</strong> {encounterDetails.patientId}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body1"><strong>Patient Name:</strong> {encounterDetails.patient_name}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body1"><strong>Doctor:</strong> {encounterDetails.doctor_name}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body1"><strong>Date:</strong> {encounterDetails.date}</Typography>
+              </Grid>
+            </Grid>
+            <Box mt={2}>
+              {!invoiceId ? (
+                <IconButton
+                  onClick={handleOpenInvoiceDialog}
+                  color="primary"
+                >
+                  <ReceiptIcon />
+                </IconButton>
+              ) : (
+                <Button onClick={handlePrint} color="primary" startIcon={<PrintIcon />}>
+                  Print Invoice
+                </Button>
+              )}
+            </Box>
           </Box>
         ) : (
           <>
@@ -156,20 +232,29 @@ const EncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
                 onChange={(e) => setAmount(e.target.value)}
                 fullWidth
                 margin="normal"
+                error={!!error}
+                helperText={error}
               />
             )}
           </>
         )}
       </DialogContent>
       <DialogActions>
-        {!invoiceId && (
+        {!encounterDetails && (
           <Button onClick={handleSubmit} color="primary">
-            Create Encounter
+            {createInvoice ? 'Create Encounter and Invoice' : 'Create Encounter'}
           </Button>
         )}
       </DialogActions>
+      <CreateInvoiceDialog
+        open={invoiceDialogOpen}
+        onClose={handleCloseInvoiceDialog}
+        encounter={encounterDetails}
+        patient={patient}
+        onInvoiceCreated={onEncounterCreated}
+      />
     </Dialog>
   );
 };
 
-export default EncounterDialog;
+export default CreateEncounterDialog;
