@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button, Grid, Box, InputAdornment } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import WcIcon from '@mui/icons-material/Wc';
-import PhoneIcon from '@mui/icons-material/Phone';
+import { Box } from '@mui/material';
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CForm,
+  CFormInput,
+  CFormLabel,
+  CButton,
+  CRow,
+  CInputGroup,
+  CInputGroupText
+} from '@coreui/react';
 
-const PatientForm = ({ onPatientAdded }) => {
+import CloseIcon from '@mui/icons-material/Close';
+import CIcon from '@coreui/icons-react';
+import { cilUser, cilCalendar, cilWc, cilPhone } from '@coreui/icons';
+
+const PatientForm = ({ onClose, onPatientAdded }) => {
   const [form, setForm] = useState({ name: '', age: '', gender: '', contact: '' });
 
   const handleChange = (e) => {
@@ -26,95 +39,117 @@ const PatientForm = ({ onPatientAdded }) => {
   };
 
   return (
-    <Container>
-      <Typography variant="h5" component="h2" gutterBottom style={{ marginTop: '2rem' }}>
-        Add a New Patient
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField 
-              label="Name" 
-              name="name" 
-              value={form.name} 
-              onChange={handleChange} 
-              fullWidth 
-              margin="normal" 
-              required 
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField 
-              label="Age" 
-              name="age" 
-              type="number" 
-              value={form.age} 
-              onChange={handleChange} 
-              fullWidth 
-              margin="normal" 
-              required 
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarTodayIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField 
-              label="Gender" 
-              name="gender" 
-              value={form.gender} 
-              onChange={handleChange} 
-              fullWidth 
-              margin="normal" 
-              required 
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <WcIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField 
-              label="Contact" 
-              name="contact" 
-              value={form.contact} 
-              onChange={handleChange} 
-              fullWidth 
-              margin="normal" 
-              required 
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PhoneIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Box textAlign="center">
-              <Button type="submit" variant="contained" color="primary">
-                Add Patient
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
-      </form>
-    </Container>
+    <CRow className="justify-content-center">
+      <CCol>
+        <CCard>
+          <CCardHeader style={{ height: '3.5rem', backgroundColor: 'secondary' }}>
+            Add a New Patient
+          <Box
+            sx={{
+              position: 'absolute',
+              right: 10,
+              top: 6,
+              backgroundColor: 'white',
+              borderRadius: '50%',
+              width: 26,
+              height: 26,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'black',
+              cursor: 'pointer',
+              boxShadow: 3
+            }}
+            onClick={onClose}
+          >
+            <CloseIcon sx={{ width: 15, height: 15 }} />
+          </Box>
+          </CCardHeader>
+          <CCardBody>
+            <CForm onSubmit={handleSubmit}>
+              <CRow className="mb-3">
+                <CCol xs="12">
+                  <CFormLabel htmlFor="name">Name</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      id="name"
+                      name="name"
+                      placeholder="Enter patient's name"
+                      value={form.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </CInputGroup>
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol xs="12" sm="6">
+                  <CFormLabel htmlFor="age">Age</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilCalendar} />
+                    </CInputGroupText>
+                    <CFormInput
+                      type="number"
+                      id="age"
+                      name="age"
+                      placeholder="Enter age"
+                      value={form.age}
+                      onChange={handleChange}
+                      required
+                    />
+                  </CInputGroup>
+                </CCol>
+                <CCol xs="12" sm="6">
+                  <CFormLabel htmlFor="gender">Gender</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilWc} />
+                    </CInputGroupText>
+                    <CFormInput
+                      id="gender"
+                      name="gender"
+                      placeholder="Enter gender"
+                      value={form.gender}
+                      onChange={handleChange}
+                      required
+                    />
+                  </CInputGroup>
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol xs="12">
+                  <CFormLabel htmlFor="contact">Contact</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilPhone} />
+                    </CInputGroupText>
+                    <CFormInput
+                      id="contact"
+                      name="contact"
+                      placeholder="Enter contact"
+                      value={form.contact}
+                      onChange={handleChange}
+                      required
+                    />
+                  </CInputGroup>
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol xs="12" className="text-end">
+                  <CButton type="submit" color="primary">
+                    Add Patient
+                  </CButton>
+                </CCol>
+              </CRow>
+            </CForm>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   );
 };
 

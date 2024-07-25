@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import axios from 'axios';
 import CreateInvoiceDialog from './CreateInvoiceDialog';
+import { formatDate } from '../utils/dateUtils';
 
 const CreateEncounterDialog = ({ open, onClose, patient, onEncounterCreated }) => {
   const [doctorId, setDoctorId] = useState('');
@@ -66,7 +67,7 @@ const CreateEncounterDialog = ({ open, onClose, patient, onEncounterCreated }) =
         patient_name: patient.name,
         doctor_id: doctorId,
         doctor_name: doctors.find((doc) => doc.id === doctorId)?.name || '',
-        date: new Date(date).toLocaleDateString(),
+        date: date,
       };
 
       setEncounterDetails(encounterDetail);
@@ -151,7 +152,7 @@ const CreateEncounterDialog = ({ open, onClose, patient, onEncounterCreated }) =
                 <Typography variant="body1"><strong>Doctor:</strong> {encounterDetails.doctor_name}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="body1"><strong>Date:</strong> {encounterDetails.date}</Typography>
+                <Typography variant="body1"><strong>Date:</strong> {formatDate(encounterDetails.date)}</Typography>
               </Grid>
             </Grid>
             <Box mt={2}>

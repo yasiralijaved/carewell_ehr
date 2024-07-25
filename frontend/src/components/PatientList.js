@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableContainer, TableHead, Paper, Typography, Box } from '@mui/material';
+import { Box } from '@mui/material';
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CTable,
+  CTableBody,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+  CRow,
+  CButton
+} from '@coreui/react';
+
+
+import { IconButton } from '@mui/material';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 import InvoiceListDialog from './InvoiceListDialog';
 import CreateInvoiceDialog from './CreateInvoiceDialog';
 import PatientListItem from './PatientListItem';
 import SearchBar from './SearchBar';
-import TableHeader from './TableHeader';
 
-const PatientList = ({ patients }) => {
+const PatientList = ({ patients, onAddPatientClick }) => {
   const [searchTerms, setSearchTerms] = useState({
     name: '',
     age: '',
@@ -50,27 +67,54 @@ const PatientList = ({ patients }) => {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Patients
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <SearchBar searchTerms={searchTerms} handleSearchChange={handleSearchChange} />
-            <TableHeader />
-          </TableHead>
-          <TableBody>
-            {filteredPatients.map((patient) => (
-              <PatientListItem
-                key={patient.id}
-                patient={patient}
-                onCreateInvoice={handleCreateInvoice}
-                onViewInvoices={handleViewInvoices}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>Patient List</div>
+              <div style={{ display: 'flex', alignItems: 'center', textAlign: 'center', overflow: 'hidden' }}>
+                <CButton color="primary" variant="outline" onClick={() => onAddPatientClick()}>
+                  
+                  <div>
+                    <PersonAddIcon sx={{ fontSize: 23 }} />
+                    <span style={{fontSize: '11pt', marginLeft: '5pt', display: 'inline-block', marginTop: "0 auto"}}>
+                      Add New Patient
+                    </span>
+                  </div>
+                </CButton>
+              </div>
+            
+            </CCardHeader>
+            <CCardBody>
+              <SearchBar searchTerms={searchTerms} handleSearchChange={handleSearchChange} />
+              <CTable hover> 
+                <CTableHead>
+                  <CTableRow>
+                  <CTableHeaderCell className="text-center align-middle">ID</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">Name</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">Age</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">Gender</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">Contact</CTableHeaderCell>
+                  <CTableHeaderCell className="text-end"></CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                {filteredPatients.map((patient) => (
+                  <React.Fragment key={patient.id}>
+                    <PatientListItem
+                      key={patient.id}
+                      patient={patient}
+                      onCreateInvoice={handleCreateInvoice}
+                      onViewInvoices={handleViewInvoices}
+                    />
+                  </React.Fragment>
+                ))}
+                </CTableBody>
+              </CTable>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
       {selectedPatientId && (
         <InvoiceListDialog
           open={isInvoiceDialogOpen}

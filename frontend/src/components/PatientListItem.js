@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { TableCell, TableRow, IconButton } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import {
+  CTableRow,
+  CTableDataCell,
+} from '@coreui/react';
+import { IconButton } from '@mui/material';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import InfoIcon from '@mui/icons-material/Info';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import CreateEncounterDialog from './CreateEncounterDialog';
 import UninvoicedEncountersDialog from './UninvoicedEncountersDialog';
 
@@ -21,23 +26,24 @@ const PatientListItem = ({ patient, onViewInvoices }) => {
 
   return (
     <>
-      <TableRow key={patient.id}>
-        <TableCell>{patient.name}</TableCell>
-        <TableCell>{patient.age}</TableCell>
-        <TableCell>{patient.gender}</TableCell>
-        <TableCell>{patient.contact}</TableCell>
-        <TableCell>
-          <IconButton size="small" color="primary" onClick={() => setCreateEncounterDialogOpen(true)}>
-            <PersonAddIcon />
+    <CTableRow>
+      <CTableDataCell className="text-center align-middle">{patient.id}</CTableDataCell>
+      <CTableDataCell className="text-center align-middle">{patient.name}</CTableDataCell>
+      <CTableDataCell className="text-center align-middle">{patient.age}</CTableDataCell>
+      <CTableDataCell className="text-center align-middle">{patient.gender}</CTableDataCell>
+      <CTableDataCell className="text-center align-middle">{patient.contact}</CTableDataCell>
+      <CTableDataCell className="text-end align-middle">
+          <IconButton sx={{ px: 1 }} color="primary" onClick={() => setCreateEncounterDialogOpen(true)}>
+            <PostAddIcon sx={{ fontSize: 22 }} />
           </IconButton>
-          <IconButton size="small" color="secondary" onClick={() => onViewInvoices(patient.id)}>
-            <VisibilityIcon />
+          <IconButton sx={{ px: 1 }} color="secondary" onClick={() => onViewInvoices(patient.id)}>
+            <ReceiptIcon sx={{ fontSize: 20 }}/>
           </IconButton>
-          <IconButton onClick={handleOpenUninvoicedDialog}>
-            <InfoIcon />
+          <IconButton sx={{ px: 1 }} onClick={handleOpenUninvoicedDialog}>
+            <CurrencyExchangeIcon sx={{ fontSize: 18 }}/>
           </IconButton>
-        </TableCell>
-      </TableRow>
+      </CTableDataCell>
+    </CTableRow>
       {encounterDialogOpen && (
         <CreateEncounterDialog
           open={encounterDialogOpen}
