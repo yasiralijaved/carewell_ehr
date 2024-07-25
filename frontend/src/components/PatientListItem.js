@@ -5,7 +5,6 @@ import {
 } from '@coreui/react';
 import { IconButton } from '@mui/material';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-import InfoIcon from '@mui/icons-material/Info';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CreateEncounterDialog from './CreateEncounterDialog';

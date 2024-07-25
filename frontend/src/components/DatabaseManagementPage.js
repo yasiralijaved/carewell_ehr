@@ -1,6 +1,17 @@
 import React, { useRef, useState } from 'react';
-import { Container, Button, Typography, Dialog, DialogTitle, DialogContent, CircularProgress, AppBar, Toolbar } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Container, Button, Typography, Dialog, DialogTitle, DialogContent, CircularProgress, AppBar, Toolbar, IconButton } from '@mui/material';
+import {
+  CSidebar,
+  CSidebarHeader,
+  CSidebarBrand,
+  CSidebarNav,
+  CNavItem,
+} from '@coreui/react';
+
+import HomeIcon from '@mui/icons-material/Home';
+import MedicationIcon from '@mui/icons-material/Medication';
+import StorageIcon from '@mui/icons-material/Storage';
+
 import axios from 'axios';
 
 const DatabaseManagementPage = () => {
@@ -71,39 +82,68 @@ const DatabaseManagementPage = () => {
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             CareWell
           </Typography>
-          <Button color="inherit" component={Link} to="/">Home</Button>
-          <Button color="inherit" component={Link} to="/doctors">Doctors</Button>
-          <Button color="inherit" component={Link} to="/database">Database Management</Button>
         </Toolbar>
       </AppBar>
-      <Typography variant="h4" gutterBottom>
-        Database Management
-      </Typography>
-      <Button onClick={handleExport} variant="contained" color="primary" style={{ marginRight: '10px' }}>
-        Export Database
-      </Button>
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: 'none' }}
-        onChange={handleFileChange}
-      />
-      <Button
-        onClick={handleImport}
-        variant="contained"
-        color="secondary"
-      >
-        Import Database
-      </Button>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Importing Database</DialogTitle>
-        <DialogContent>
-          <CircularProgress />
-          <Typography variant="body1" style={{ marginTop: '10px' }}>
-            Please wait while the database is being imported...
-          </Typography>
-        </DialogContent>
-      </Dialog>
+      <div className='d-flex'>
+        <div className="p-2 flex-fil">
+          <>
+            <CSidebar className="border-end" narrow>
+              <CSidebarHeader className="border-bottom">
+                <CSidebarBrand>CUI</CSidebarBrand>
+              </CSidebarHeader>
+              <CSidebarNav>
+                <CNavItem href="/">
+                  <IconButton sx={{ px: 1 }}>
+                    <HomeIcon sx={{ fontSize: 22, color: 'white' }} />
+                  </IconButton>
+                </CNavItem>
+                <CNavItem href="/doctors">
+                  <IconButton sx={{ px: 1 }}>
+                    <MedicationIcon sx={{ fontSize: 22, color: 'white' }} />
+                  </IconButton>
+                </CNavItem>
+                <CNavItem href="/database">
+                  <IconButton sx={{ px: 1 }}>
+                    <StorageIcon sx={{ fontSize: 19, color: 'white' }} />
+                  </IconButton>
+                </CNavItem>
+              </CSidebarNav>
+            </CSidebar>
+          </>
+        </div>
+        <div className="p-2 flex-grow-1">
+          <>
+            <Typography variant="h4" gutterBottom>
+              Database Management
+            </Typography>
+            <Button onClick={handleExport} variant="contained" color="primary" style={{ marginRight: '10px' }}>
+              Export Database
+            </Button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+            <Button
+              onClick={handleImport}
+              variant="contained"
+              color="secondary"
+            >
+              Import Database
+            </Button>
+            <Dialog open={open} onClose={() => setOpen(false)}>
+              <DialogTitle>Importing Database</DialogTitle>
+              <DialogContent>
+                <CircularProgress />
+                <Typography variant="body1" style={{ marginTop: '10px' }}>
+                  Please wait while the database is being imported...
+                </Typography>
+              </DialogContent>
+            </Dialog>
+          </>
+        </div>
+      </div>
     </Container>
   );
 };
