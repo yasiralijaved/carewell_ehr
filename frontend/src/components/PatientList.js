@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import {
   CCard,
   CCardBody,
@@ -68,45 +68,47 @@ const PatientList = ({ patients, onAddPatientClick }) => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>Patient List</div>
+            <CCardHeader style={{ height: '40pt', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="h6">
+                Patients
+              </Typography>
               <div style={{ display: 'flex', alignItems: 'center', textAlign: 'center', overflow: 'hidden' }}>
                 <CButton color="primary" variant="outline" onClick={() => onAddPatientClick()}>
-                  
+
                   <div>
                     <PersonAddIcon sx={{ fontSize: 23 }} />
-                    <span style={{fontSize: '11pt', marginLeft: '5pt', display: 'inline-block', marginTop: "0 auto"}}>
+                    <span style={{ fontSize: '11pt', marginLeft: '5pt', display: 'inline-block', marginTop: "0 auto" }}>
                       Add New Patient
                     </span>
                   </div>
                 </CButton>
               </div>
-            
+
             </CCardHeader>
             <CCardBody>
               <SearchBar searchTerms={searchTerms} handleSearchChange={handleSearchChange} />
-              <CTable hover> 
+              <CTable hover>
                 <CTableHead>
                   <CTableRow>
-                  <CTableHeaderCell className="text-center align-middle">ID</CTableHeaderCell>
-                  <CTableHeaderCell className="text-center">Name</CTableHeaderCell>
-                  <CTableHeaderCell className="text-center">Age</CTableHeaderCell>
-                  <CTableHeaderCell className="text-center">Gender</CTableHeaderCell>
-                  <CTableHeaderCell className="text-center">Contact</CTableHeaderCell>
-                  <CTableHeaderCell className="text-end"></CTableHeaderCell>
+                    <CTableHeaderCell className="text-center align-middle">ID</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Name</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Age</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Gender</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Contact</CTableHeaderCell>
+                    <CTableHeaderCell className="text-end"></CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                {filteredPatients.map((patient) => (
-                  <React.Fragment key={patient.id}>
-                    <PatientListItem
-                      key={patient.id}
-                      patient={patient}
-                      onCreateInvoice={handleCreateInvoice}
-                      onViewInvoices={handleViewInvoices}
-                    />
-                  </React.Fragment>
-                ))}
+                  {filteredPatients.map((patient) => (
+                    <React.Fragment key={patient.id}>
+                      <PatientListItem
+                        key={patient.id}
+                        patient={patient}
+                        onCreateInvoice={handleCreateInvoice}
+                        onViewInvoices={handleViewInvoices}
+                      />
+                    </React.Fragment>
+                  ))}
                 </CTableBody>
               </CTable>
             </CCardBody>

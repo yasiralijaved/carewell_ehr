@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import {
   CCard,
   CCardBody,
@@ -42,28 +42,33 @@ const PatientForm = ({ onClose, onPatientAdded }) => {
     <CRow className="justify-content-center">
       <CCol>
         <CCard>
-          <CCardHeader style={{ height: '3.5rem', backgroundColor: 'secondary' }}>
-            Add a New Patient
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 10,
-              top: 6,
-              backgroundColor: 'white',
-              borderRadius: '50%',
-              width: 26,
-              height: 26,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'black',
-              cursor: 'pointer',
-              boxShadow: 3
-            }}
-            onClick={onClose}
-          >
-            <CloseIcon sx={{ width: 15, height: 15 }} />
-          </Box>
+          <CCardHeader style={{ height: '40pt', display: 'flex', backgroundColor: 'secondary' }}>
+            <Box style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+
+              <Typography variant="h6">
+                Add New Patient
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                position: 'absolute',
+                right: 10,
+                top: 6,
+                backgroundColor: 'white',
+                borderRadius: '50%',
+                width: 26,
+                height: 26,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'black',
+                cursor: 'pointer',
+                boxShadow: 3
+              }}
+              onClick={onClose}
+            >
+              <CloseIcon sx={{ width: 15, height: 15 }} />
+            </Box>
           </CCardHeader>
           <CCardBody>
             <CForm onSubmit={handleSubmit}>

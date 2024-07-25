@@ -1,26 +1,16 @@
 import React from 'react';
-import { Box } from '@mui/material';
-
-import {
-  CModal,
-} from '@coreui/react';
+import { Box, Modal } from '@mui/material';
 
 import PatientForm from './PatientForm';
 
 const PatientFormDialog = ({ visible, onClose, onPatientAdded }) => {
 
   return (
-    <Box>
-      { visible && 
-        (
-          <CModal visible={visible} onClose={() => onClose() }>
-            <Box>
-              <PatientForm onClose={ () => onClose() } onPatientAdded={ (newPatient) => onPatientAdded(newPatient) } />
-            </Box>
-          </CModal>
-        )
-      }
-    </Box>
+    <Modal open={visible} onClose={() => onClose()} style={{ alignItems: 'center', justifyContent: 'center', display: 'flex'}}>
+      <Box sx={{ width: 500 }}>
+        <PatientForm onClose={() => onClose()} onPatientAdded={(newPatient) => onPatientAdded(newPatient)} />
+      </Box>
+    </Modal>
   );
 };
 

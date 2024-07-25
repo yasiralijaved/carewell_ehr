@@ -1,18 +1,9 @@
 import React from 'react';
-import { Container, AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
-import {
-  CSidebar,
-  CSidebarHeader,
-  CSidebarBrand,
-  CSidebarNav,
-  CNavItem,
-} from '@coreui/react';
+import { Toolbar, Typography, IconButton, Box } from '@mui/material';
 
-import { styled, alpha } from '@mui/material/styles';
+import { styled, alpha, useTheme } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -21,11 +12,92 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
 
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
+import Divider from '@mui/material/Divider';
+import CssBaseline from '@mui/material/CssBaseline';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+
+
 
 import HomeIcon from '@mui/icons-material/Home';
 import MedicationIcon from '@mui/icons-material/Medication';
 import StorageIcon from '@mui/icons-material/Storage';
 import Patients from './Patients';
+
+
+const drawerWidth = 240;
+
+const openedMixin = (theme) => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+});
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}));
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    ...(open && {
+      ...openedMixin(theme),
+      '& .MuiDrawer-paper': openedMixin(theme),
+    }),
+    ...(!open && {
+      ...closedMixin(theme),
+      '& .MuiDrawer-paper': closedMixin(theme),
+    }),
+  }),
+);
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -69,91 +141,32 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const HomePage = () => {
 
-  const isMenuOpen = Boolean(false);
-  const isMobileMenuOpen = Boolean(false);
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
 
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-    >
-      <MenuItem onClick={ () => {}}>Profile</MenuItem>
-      <MenuItem onClick={() => {}}>My account</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-    >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={() => {}}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
-
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <Container maxWidth={false}>
-      <AppBar position="static">
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            sx={{ mr: 2 }}
+            sx={{
+              marginRight: 5,
+              ...(open && { display: 'none' }),
+            }}
+            onClick={handleDrawerOpen}
           >
             <MenuIcon />
           </IconButton>
@@ -163,7 +176,7 @@ const HomePage = () => {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            CAREWELL
+            CAREWELL EHR
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -194,7 +207,6 @@ const HomePage = () => {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
               aria-haspopup="true"
               color="inherit"
             >
@@ -205,7 +217,6 @@ const HomePage = () => {
             <IconButton
               size="large"
               aria-label="show more"
-              aria-controls={mobileMenuId}
               aria-haspopup="true"
               color="inherit"
             >
@@ -214,41 +225,87 @@ const HomePage = () => {
           </Box>
         </Toolbar>
       </AppBar>
-      <div className='d-flex'>
-        <div className="p-2 flex-fil">
-          <>
-            <CSidebar className="border-end" narrow>
-              <CSidebarHeader className="border-bottom">
-                <CSidebarBrand>CUI</CSidebarBrand>
-              </CSidebarHeader>
-              <CSidebarNav>
-                <CNavItem href="/">
-                  <IconButton sx={{ px: 1 }}>
-                    <HomeIcon sx={{ fontSize: 22, color: 'white' }} />
-                  </IconButton>
-                </CNavItem>
-                <CNavItem href="/doctors">
-                  <IconButton sx={{ px: 1 }}>
-                    <MedicationIcon sx={{ fontSize: 22, color: 'white' }} />
-                  </IconButton>
-                </CNavItem>
-                <CNavItem href="/database">
-                  <IconButton sx={{ px: 1 }}>
-                    <StorageIcon sx={{ fontSize: 19, color: 'white' }} />
-                  </IconButton>
-                </CNavItem>
-              </CSidebarNav>
-            </CSidebar>
-          </>
-        </div>
-        <div className="p-2 flex-grow-1">
-          <>
-            <Patients />
-          </>
-        </div>
-      </div>
-
-    </Container>
+      <Drawer variant="permanent" open={open}>
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <List>
+          <ListItem key={'Home'} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+            component="a" href="/"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Home'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key={'Doctors'} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+             component="a" href="/doctors"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <MedicationIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Doctors'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={'Import & Export'} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+            component="a" href="/database"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <StorageIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Import & Export'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        <Patients />
+      </Box>
+    </Box>
   );
 };
 

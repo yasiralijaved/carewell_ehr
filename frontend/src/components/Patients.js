@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Box } from '@mui/material';
+import axios from 'axios';
+
 import PatientList from './PatientList';
 import PatientFormDialog from './PatientFormDialog';
-import { Box } from '@mui/material';
 
-import axios from 'axios';
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
@@ -26,7 +27,7 @@ const Patients = () => {
   return (
     <Box>
       <PatientList patients={patients} onAddPatientClick={ () => setVisible(true)} />
-      { visible && (<PatientFormDialog visible={visible} onClose={ () => setVisible(false) } onPatientAdded={ (newPatient) => { handlePatientAdded(newPatient); setVisible(false); } } />)}
+      <PatientFormDialog visible={visible} onClose={ () => setVisible(false) } onPatientAdded={ (newPatient) => { handlePatientAdded(newPatient); setVisible(false); } } />
     </Box>
   );
 };
