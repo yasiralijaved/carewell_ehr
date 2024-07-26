@@ -8,7 +8,7 @@ import PatientFormDialog from './PatientFormDialog';
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     axios.get('/api/patients')

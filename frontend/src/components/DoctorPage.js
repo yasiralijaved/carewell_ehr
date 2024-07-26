@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Toolbar, Typography, IconButton, Box } from '@mui/material';
+import { Toolbar, Typography, IconButton, Box } from '@mui/material';
 import {
   CRow,
   CCol,
   CCard,
   CCardHeader,
-  CCardBody
+  CCardBody,
+  CButton,
+  CContainer
 } from '@coreui/react';
+
+import DoctorCard from './DoctorCard';
+import '../doctor-list.css';
 
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -31,12 +36,15 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 
 import HomeIcon from '@mui/icons-material/Home';
 import MedicationIcon from '@mui/icons-material/Medication';
 import StorageIcon from '@mui/icons-material/Storage';
 
 import axios from 'axios';
+import DoctorAddFormDialog from './DoctorAddFormDialog';
 
 const drawerWidth = 240;
 
@@ -149,8 +157,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const DoctorPage = () => {
   const [doctors, setDoctors] = useState([]);
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   useEffect(() => {
     fetchDoctors();
@@ -165,19 +173,6 @@ const DoctorPage = () => {
     }
   };
 
-  const addDoctor = async () => {
-    if (!name || !contact) return;
-
-    try {
-      await axios.post('/api/doctors/add', { name, contact });
-      setName('');
-      setContact('');
-      fetchDoctors();
-    } catch (error) {
-      console.error('Error adding doctor:', error);
-    }
-  };
-
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -187,6 +182,14 @@ const DoctorPage = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleDoctorAdded = (newDoctor) => {
+    setDoctors([...doctors, newDoctor]);
+  };
+
+  const handleCardClick = (doctor) => {
+    setSelectedDoctor(doctor);
   };
 
   return (
@@ -347,33 +350,24 @@ const DoctorPage = () => {
                 <Typography variant="h6">
                   Doctors
                 </Typography>
+                <div style={{ display: 'flex', alignItems: 'center', textAlign: 'center', overflow: 'hidden' }}>
+                  <CButton color="primary" variant="outline" onClick={() => setVisible(true)}>
+                    <div>
+                      <PersonAddIcon sx={{ fontSize: 23 }} />
+                      <span style={{ fontSize: '11pt', marginLeft: '5pt', display: 'inline-block', marginTop: "0 auto" }}>
+                        Add New Doctor
+                      </span>
+                    </div>
+                  </CButton>
+                </div>
               </CCardHeader>
               <CCardBody>
-                <TextField
-                  label="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="Contact"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  fullWidth
-                  margin="normal"
-                />
-                <Button onClick={addDoctor} color="primary" variant="contained">
-                  Add Doctor
-                </Button>
-                <h3>Doctor List</h3>
-                <List>
+                <DoctorAddFormDialog visible={visible} onClose={() => setVisible(false)} onDoctorAdded={(newDoctor) => { handleDoctorAdded(newDoctor); setVisible(false); }} />
+                <CContainer className="doctor-grid">
                   {doctors.map((doctor) => (
-                    <ListItem key={doctor.id}>
-                      <ListItemText primary={doctor.name} secondary={doctor.contact} />
-                    </ListItem>
+                    <DoctorCard key={doctor.id} doctor={doctor} selected={selectedDoctor === doctor} onClick={() => handleCardClick(doctor)} />
                   ))}
-                </List>
+                </CContainer>
               </CCardBody>
             </CCard>
           </CCol>
