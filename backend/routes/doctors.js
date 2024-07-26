@@ -30,5 +30,20 @@ module.exports = () => {
     }
   });
 
+  // Delete a doctor
+  router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const [result] = await db.execute('DELETE FROM doctors WHERE id = ?', [id]);
+      if (result.affectedRows > 0) {
+        res.status(200).json({ message: 'Doctor deleted successfully' });
+      } else {
+        res.status(404).json({ message: 'Doctor not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   return router;
 };

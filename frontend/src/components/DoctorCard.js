@@ -13,20 +13,20 @@ import EditIcon from '@mui/icons-material/Edit';
 import CIcon from '@coreui/icons-react';
 import '../doctor-list.css';
 
-const DoctorCard = ({ doctor, selected, onClick }) => {
+const DoctorCard = ({ doctor, selected, onClick, onDeleteClick }) => {
     return (
-        <CCard className={`mb-4 ${selected ? 'border-primary' : ''}`} onClick={onClick}>
+        <CCard className={`mb-4 doctor-card ${selected ? 'border-primary' : ''}`} onClick={onClick}>
 
             <Box className='relative'>
                 <div className="position-absolute top-0 w-100 d-flex flex-row justify-content-between">
-                {selected && <IconButton sx={{ px: 1 }} color="secondary" onClick={() => { }}>
+                {selected && <IconButton sx={{ px: 1 }} color="secondary" onClick={ () => { onDeleteClick(doctor) } }>
                     <DeleteIcon sx={{ fontSize: 20 }} />
                 </IconButton>}
-                {selected && <IconButton sx={{ px: 1 }} color="primary" onClick={() => { }}>
+                {selected && <IconButton sx={{ px: 1 }} color="primary" onClick={ () => { } }>
                     <EditIcon sx={{ fontSize: 20 }} />
                 </IconButton>}
                 </div>
-                <img class="doctor-photo w-100" alt="Doctor Photo" src={"/doctor_male.jpg"} />
+                <img className="doctor-photo w-100" alt="Doctor Photo" src={"/doctor_male.jpg"} />
             </Box>
 
             <CCardBody className={selected ? 'bg-primary-light' : ''}>

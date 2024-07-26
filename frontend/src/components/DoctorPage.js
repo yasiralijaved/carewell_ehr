@@ -43,6 +43,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import MedicationIcon from '@mui/icons-material/Medication';
 import StorageIcon from '@mui/icons-material/Storage';
 
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 import axios from 'axios';
 import DoctorAddFormDialog from './DoctorAddFormDialog';
 
@@ -159,9 +166,22 @@ const DoctorPage = () => {
   const [doctors, setDoctors] = useState([]);
   const [visible, setVisible] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [openDeleteDoctorDialog, setOpenDeleteDoctorDialog] = useState(false);
 
   useEffect(() => {
     fetchDoctors();
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.doctor-card')) {
+        setOpenDeleteDoctorDialog(false);
+        setTimeout(() => {
+          setSelectedDoctor(null);
+        }, 100); // Delay of 300 milliseconds
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   const fetchDoctors = async () => {
@@ -190,6 +210,24 @@ const DoctorPage = () => {
 
   const handleCardClick = (doctor) => {
     setSelectedDoctor(doctor);
+  };
+
+  const handleDeleteDoctor = async (doctor) => {
+    setOpenDeleteDoctorDialog(true);
+  };
+
+  const handleCloseDeleteDoctorDialog = () => {
+    setOpenDeleteDoctorDialog(false);
+  };
+
+  const handleConfirmDeleteDoctor = async () => {
+    setOpenDeleteDoctorDialog(false);
+    try {
+      await axios.delete(`/api/doctors/${selectedDoctor.id}`);
+      setDoctors(doctors.filter(d => d.id !== selectedDoctor.id));
+    } catch (error) {
+      console.error('There was an error deleting the doctor!', error);
+    }
   };
 
   return (
@@ -365,7 +403,7 @@ const DoctorPage = () => {
                 <DoctorAddFormDialog visible={visible} onClose={() => setVisible(false)} onDoctorAdded={(newDoctor) => { handleDoctorAdded(newDoctor); setVisible(false); }} />
                 <CContainer className="doctor-grid">
                   {doctors.map((doctor) => (
-                    <DoctorCard key={doctor.id} doctor={doctor} selected={selectedDoctor === doctor} onClick={() => handleCardClick(doctor)} />
+                    <DoctorCard key={doctor.id} doctor={doctor} selected={selectedDoctor === doctor} onClick={() => handleCardClick(doctor)} onDeleteClick={() => handleDeleteDoctor(doctor)} />
                   ))}
                 </CContainer>
               </CCardBody>
@@ -373,6 +411,31 @@ const DoctorPage = () => {
           </CCol>
         </CRow>
       </Box>
+      (openDeleteDoctorDialog && 
+        <Dialog
+        open={openDeleteDoctorDialog}
+        onClose={handleCloseDeleteDoctorDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Warning"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {selectedDoctor ? `Do you want to delete the doctor ${selectedDoctor.name}?` : 'No doctor selected'}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CButton color="light" size="sm" onClick={ (e) => { e.stopPropagation(); handleCloseDeleteDoctorDialog();}}>Cancel</CButton>
+          <CButton color="danger" size="sm" className='w-50' onClick={ (e) => { e.stopPropagation(); handleConfirmDeleteDoctor(); }} autoFocus>
+          <Typography style={{color: 'white'}}>
+            Yes, Delete
+            </Typography>
+          </CButton>
+        </DialogActions>
+      </Dialog>
+      )
     </Box>
   );
 };
