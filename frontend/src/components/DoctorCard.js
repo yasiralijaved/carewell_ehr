@@ -7,13 +7,14 @@ import {
     CCardTitle,
     CBadge,
 } from '@coreui/react';
-import { cilChatBubble } from '@coreui/icons';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import CIcon from '@coreui/icons-react';
 import '../doctor-list.css';
 
 const DoctorCard = ({ doctor, selected, onClick, onDeleteClick }) => {
+    console.log(doctor.profile_pic);
+    const profilePicUrl = doctor.profile_pic ? `${process.env.REACT_APP_BACKEND_URL}/uploads/${doctor.profile_pic}` : '/doctor_male.jpg';
+    console.log(doctor.profilePicUrl);
     return (
         <CCard className={`mb-4 doctor-card ${selected ? 'border-primary' : ''}`} onClick={onClick}>
 
@@ -22,20 +23,16 @@ const DoctorCard = ({ doctor, selected, onClick, onDeleteClick }) => {
                 {selected && <IconButton sx={{ px: 1 }} color="secondary" onClick={ () => { onDeleteClick(doctor) } }>
                     <DeleteIcon sx={{ fontSize: 20 }} />
                 </IconButton>}
-                {selected && <IconButton sx={{ px: 1 }} color="primary" onClick={ () => { } }>
+                {selected && <IconButton sx={{ px: 1 }} color="secondary" onClick={ () => { } }>
                     <EditIcon sx={{ fontSize: 20 }} />
                 </IconButton>}
                 </div>
-                <img className="doctor-photo w-100" alt="Doctor Photo" src={"/doctor_male.jpg"} />
+                <img className="doctor-photo w-100" alt="Doctor Photo" src={profilePicUrl} />
             </Box>
 
             <CCardBody className={selected ? 'bg-primary-light' : ''}>
                 <CCardTitle className={selected ? 'text-white' : ''}>{doctor.name}</CCardTitle>
                 <CCardText className={selected ? 'text-white' : ''}>{doctor.contact}</CCardText>
-                <div className="d-flex justify-content-between align-items-center">
-                    <CBadge color={doctor.statusColor}>{doctor.status}</CBadge>
-                    <CIcon icon={cilChatBubble} size="lg" className={selected ? 'text-white' : 'text-primary'} />
-                </div>
             </CCardBody>
         </CCard>
     );

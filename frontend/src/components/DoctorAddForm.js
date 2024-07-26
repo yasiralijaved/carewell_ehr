@@ -12,7 +12,7 @@ import {
   CButton,
   CRow,
   CInputGroup,
-  CInputGroupText
+  CInputGroupText,
 } from '@coreui/react';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -21,21 +21,38 @@ import { cilUser, cilPhone } from '@coreui/icons';
 
 const DoctorAddForm = ({ onClose, onDoctorAdded }) => {
   const [form, setForm] = useState({ name: '', contact: '' });
+  const [profilePic, setProfilePic] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('/api/doctors/add', form)
-      .then(response => {
-        onDoctorAdded(response.data);
-        setForm({ name: '', contact: '' });
-      })
-      .catch(error => {
-        console.error('There was an error adding the patient!', error);
-      });
+
+    try {
+      const response = await axios.post('/api/doctors/add', form);
+      const newDoctor = response.data;
+      if (profilePic) {
+        const formData = new FormData();
+        formData.append('id', newDoctor.id);
+        formData.append('profilePic', profilePic);
+
+        await axios.post('/api/doctors/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        newDoctor.profilePic = `${newDoctor.id}${profilePic.name.substring(profilePic.name.lastIndexOf('.'))}`;
+      }
+
+      onDoctorAdded(response.data);
+      setForm({ name: '', contact: '' });
+      setProfilePic(null);
+    } catch (error) {
+      console.error('There was an error adding the doctor!', error);
+    }
   };
 
   return (
@@ -109,6 +126,17 @@ const DoctorAddForm = ({ onClose, onDoctorAdded }) => {
                 </CCol>
               </CRow>
               <CRow className="mb-3">
+                <CCol xs="12">
+                  <CFormLabel htmlFor="profilePic">Profile Picture</CFormLabel>
+                  <CFormInput
+                    type="file"
+                    id="profilePic"
+                    name="profilePic"
+                    onChange={(e) => setProfilePic(e.target.files[0])}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
                 <CCol xs="12" className="text-end">
                   <CButton type="submit" color="primary">
                     Add Doctor
@@ -119,7 +147,7 @@ const DoctorAddForm = ({ onClose, onDoctorAdded }) => {
           </CCardBody>
         </CCard>
       </CCol>
-    </CRow>
+    </CRow >
   );
 };
 

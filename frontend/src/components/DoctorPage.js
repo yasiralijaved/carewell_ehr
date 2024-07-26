@@ -427,10 +427,14 @@ const DoctorPage = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <CButton color="light" size="sm" onClick={ (e) => { e.stopPropagation(); handleCloseDeleteDoctorDialog();}}>Cancel</CButton>
+          <CButton color="secondary" size="sm" onClick={ (e) => { e.stopPropagation(); handleCloseDeleteDoctorDialog();}}>
+            <Typography style={{color: 'white'}}>
+              Cancel
+            </Typography>
+          </CButton>
           <CButton color="danger" size="sm" className='w-50' onClick={ (e) => { e.stopPropagation(); handleConfirmDeleteDoctor(); }} autoFocus>
-          <Typography style={{color: 'white'}}>
-            Yes, Delete
+            <Typography style={{color: 'white'}}>
+              Yes, Delete
             </Typography>
           </CButton>
         </DialogActions>

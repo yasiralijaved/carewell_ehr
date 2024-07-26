@@ -18,6 +18,7 @@ services:
     volumes:
       - backend_source:/usr/src/app
       - backend_node_modules:/usr/src/app/node_modules
+      - uploads:/usr/src/app/uploads
     restart: always
     ports:
       - "5000:5000"
@@ -48,6 +49,8 @@ volumes:
     name: carewell_ehr_backend_node_modules
   frontend_node_modules:
     name: carewell_ehr_frontend_node_modules
+  uploads:
+    name: carewell_ehr_uploads
   backend_source:
     driver: local
     driver_opts:
