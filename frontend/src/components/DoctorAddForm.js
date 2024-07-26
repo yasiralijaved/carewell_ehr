@@ -13,6 +13,7 @@ import {
   CRow,
   CInputGroup,
   CInputGroupText,
+  CFormSelect,
 } from '@coreui/react';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -123,6 +124,22 @@ const DoctorAddForm = ({ onClose, onDoctorAdded }) => {
                       required
                     />
                   </CInputGroup>
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol xs="12">
+                <CFormLabel htmlFor="gender">Gender</CFormLabel>
+                  <CFormSelect
+                    id="gender"
+                    name="gender"
+                    value={form.gender}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </CFormSelect>
                 </CCol>
               </CRow>
               <CRow className="mb-3">
