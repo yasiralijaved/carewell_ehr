@@ -19,12 +19,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { formatDate } from '../utils/dateUtils';
 
-const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
+const InvoiceListDialog = ({ open, onClose, patientId }) => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    console.debug("InvoiceListDialog -> fetchInvoices()");
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(`/api/invoices/patient/${patientId}`);
@@ -37,8 +38,10 @@ const InvoiceListDialog = ({ open, onClose, patientId, refresh }) => {
       }
     };
 
-    fetchInvoices();
-  }, [patientId, refresh]);
+    if (open) {
+      fetchInvoices();
+    }
+  }, [open, patientId]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);

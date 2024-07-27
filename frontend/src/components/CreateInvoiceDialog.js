@@ -12,7 +12,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 
-const CreateInvoiceDialog = ({ open, onClose, encounter, patient, onInvoiceCreated }) => {
+const CreateInvoiceDialog = ({ open, onClose, encounter, patient }) => {
   const [amount, setAmount] = useState('');
   const [invoiceId, setInvoiceId] = useState(null);
   const [error, setError] = useState('');
@@ -39,9 +39,6 @@ const CreateInvoiceDialog = ({ open, onClose, encounter, patient, onInvoiceCreat
 
       // Update the encounter's invoiced status
       await axios.put(`/api/encounters/${encounter.id}/invoiced`);
-
-      // Call the callback to update the parent component
-      onInvoiceCreated();
 
     } catch (error) {
       console.error('Error creating invoice:', error);

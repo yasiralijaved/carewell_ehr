@@ -32,7 +32,6 @@ const PatientList = ({ patients, onAddPatientClick }) => {
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [isInvoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
   const [isCreateInvoiceDialogOpen, setCreateInvoiceDialogOpen] = useState(false);
-  const [refreshInvoices, setRefreshInvoices] = useState(0);
 
   const handleSearchChange = (event) => {
     setSearchTerms({
@@ -49,11 +48,6 @@ const PatientList = ({ patients, onAddPatientClick }) => {
   const handleViewInvoices = (patientId) => {
     setSelectedPatientId(patientId);
     setInvoiceDialogOpen(true);
-  };
-
-  const handleInvoiceCreated = (invoiceId) => {
-    console.log('Invoice created with ID:', invoiceId);
-    setRefreshInvoices(refreshInvoices + 1);
   };
 
   const filteredPatients = patients.filter((patient) =>
@@ -120,7 +114,6 @@ const PatientList = ({ patients, onAddPatientClick }) => {
           open={isInvoiceDialogOpen}
           onClose={() => setInvoiceDialogOpen(false)}
           patientId={selectedPatientId}
-          refresh={refreshInvoices}
         />
       )}
       {selectedPatientId && (
@@ -128,7 +121,6 @@ const PatientList = ({ patients, onAddPatientClick }) => {
           open={isCreateInvoiceDialogOpen}
           onClose={() => setCreateInvoiceDialogOpen(false)}
           patientId={selectedPatientId}
-          onInvoiceCreated={handleInvoiceCreated}
         />
       )}
     </Box>

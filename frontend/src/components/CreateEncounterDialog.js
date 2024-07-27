@@ -243,7 +243,7 @@ const CreateEncounterDialog = ({ open, onClose, patient, onEncounterCreated }) =
       <DialogActions>
         {!encounterDetails && (
           <Button onClick={handleSubmit} color="primary">
-            {createInvoice ? 'Create Encounter and Invoice' : 'Create Encounter'}
+            Create
           </Button>
         )}
       </DialogActions>

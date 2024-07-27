@@ -5,7 +5,6 @@ import {
     CCardBody,
     CCardText,
     CCardTitle,
-    CBadge,
 } from '@coreui/react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -27,7 +26,7 @@ const DoctorCard = ({ doctor, selected, onClick, onDeleteClick }) => {
                     <EditIcon sx={{ fontSize: 20 }} />
                 </IconButton>}
                 </div>
-                <img className="doctor-photo w-100" alt="Doctor Photo" src={profilePicUrl} />
+                <img className="doctor-photo w-100" alt="Doctor" src={profilePicUrl} />
             </Box>
 
             <CCardBody className={selected ? 'bg-primary-light' : ''}>
