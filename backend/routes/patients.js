@@ -1,11 +1,13 @@
 const express = require('express');
 const db = require('../models/db');
+const checkPermissions = require('../middleware/permissions');
+const authenticateToken = require('../middleware/auth');
 
 module.exports = () => {
   const router = express.Router();
 
   // Get all patients
-  router.get('/', async (req, res) => {
+  router.get('/', authenticateToken, checkPermissions('read', 'Patient'), async (req, res) => {
     try {
       const [rows] = await db.execute('SELECT * FROM patients');
       res.json(rows);
@@ -15,7 +17,7 @@ module.exports = () => {
   });
 
   // Get a patient by ID
-  router.get('/:id', async (req, res) => {
+  router.get('/:id', authenticateToken, checkPermissions('read', 'Patient'), async (req, res) => {
     const { id } = req.params;
     try {
       const [rows] = await db.execute('SELECT * FROM patients WHERE id = ?', [id]);
@@ -29,7 +31,7 @@ module.exports = () => {
   });
 
   // Create a new patient
-  router.post('/', async (req, res) => {
+  router.post('/', authenticateToken, checkPermissions('create', 'Patient'), async (req, res) => {
     const { name, age, gender, contact } = req.body;
     if (!name || !age || !gender || !contact) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -43,7 +45,7 @@ module.exports = () => {
   });
 
   // Update a patient by ID
-  router.put('/:id', async (req, res) => {
+  router.put('/:id', checkPermissions('update', 'Patient'), async (req, res) => {
     const { id } = req.params;
     const { name, age, gender, contact } = req.body;
     if (!name || !age || !gender || !contact) {
@@ -61,7 +63,7 @@ module.exports = () => {
   });
 
   // Delete a patient by ID
-  router.delete('/:id', async (req, res) => {
+  router.delete('/:id', authenticateToken, checkPermissions('delete', 'Patient'), async (req, res) => {
     const { id } = req.params;
     try {
       const [result] = await db.execute('DELETE FROM patients WHERE id = ?', [id]);

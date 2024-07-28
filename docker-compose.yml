@@ -18,6 +18,7 @@ services:
     volumes:
       - backend_source:/usr/src/app
       - backend_node_modules:/usr/src/app/node_modules
+      - shared_module:/usr/src/app/shared_module
       - uploads:/usr/src/app/uploads
     restart: always
     ports:
@@ -63,3 +64,9 @@ volumes:
       type: none
       o: bind
       device: ./frontend
+  shared_module:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./shared_module

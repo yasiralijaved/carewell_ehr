@@ -4,10 +4,11 @@ import ReactDOM from 'react-dom';
 import '@coreui/coreui/dist/css/coreui.min.css';
 import './index.css';
 import App from './App';
+import { AuthProvider } from './context/AuthContext';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <AuthProvider>
     <App />
-  </React.StrictMode>,
+  </AuthProvider>,
   document.getElementById('root')
 );

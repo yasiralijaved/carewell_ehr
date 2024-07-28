@@ -28,7 +28,12 @@ const PatientForm = ({ onClose, onPatientAdded }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/patients', form)
+    const token = localStorage.getItem('token');
+    axios.post('/api/patients', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }, form)
       .then(response => {
         onPatientAdded(response.data);
         setForm({ name: '', age: '', gender: '', contact: '' });

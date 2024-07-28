@@ -32,7 +32,12 @@ const DoctorAddForm = ({ onClose, onDoctorAdded }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/doctors/add', form);
+      const token = localStorage.getItem('token');
+      const response = await axios.post('/api/doctors/add',{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }, form);
       const newDoctor = response.data;
       if (profilePic) {
         const formData = new FormData();

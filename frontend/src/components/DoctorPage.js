@@ -185,7 +185,12 @@ const DoctorPage = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('/api/doctors');
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/doctors', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setDoctors(response.data);
     } catch (error) {
       console.error('Error fetching doctors:', error);

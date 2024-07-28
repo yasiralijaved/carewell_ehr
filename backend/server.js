@@ -8,6 +8,7 @@ const port = 5000;
 app.use(bodyParser.json());
 app.use(cors());
 
+const authRoutes = require('./routes/auth')();
 const patientRoutes = require('./routes/patients')();
 const encounterRoutes = require('./routes/encounters')();
 const invoiceRoutes = require('./routes/invoices')();
@@ -15,6 +16,7 @@ const doctorRoutes = require('./routes/doctors')();
 const pdfRoutes = require('./routes/pdf')();
 const dbRoutes = require('./routes/db')();
 
+app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/encounters', encounterRoutes);
 app.use('/api/invoices', invoiceRoutes);

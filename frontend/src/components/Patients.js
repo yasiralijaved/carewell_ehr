@@ -11,7 +11,12 @@ const Patients = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    axios.get('/api/patients')
+    const token = localStorage.getItem('token');
+    axios.get('/api/patients', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(response => {
         setPatients(response.data);
       })

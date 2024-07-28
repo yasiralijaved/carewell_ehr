@@ -5,6 +5,27 @@ CREATE DATABASE IF NOT EXISTS carewell_db;
 
 USE carewell_db;
 
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    profile_pic VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_roles (
+    user_id INT,
+    role_id INT,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS patients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -40,4 +61,20 @@ CREATE TABLE IF NOT EXISTS invoices (
     amount DECIMAL(10, 2) NOT NULL,
     date DATETIME NOT NULL,
     FOREIGN KEY (encounter_id) REFERENCES encounters(id)
+);
+
+INSERT INTO roles (role_name) VALUES
+('Admin'),
+('Receptionist'),
+('Doctor'),
+('Patient');
+
+-- Insert admin
+INSERT INTO users (username, password) VALUES ('admin', '$2b$10$bGkx7BLN1QZQIJn5o.k/Pu8N7thte1ld3.npVphmzf7mGf8xsqQVG');
+
+-- Assign the admin role to the user
+INSERT INTO user_roles (user_id, role_id) 
+VALUES (
+    (SELECT id FROM users WHERE username = 'admin'), 
+    (SELECT id FROM roles WHERE role_name = 'Admin')
 );

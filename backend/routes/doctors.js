@@ -3,6 +3,9 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+const checkPermissions = require('../middleware/permissions');
+const authenticateToken = require('../middleware/auth');
+
 const db = require('../models/db');
 
 module.exports = () => {
@@ -25,7 +28,7 @@ module.exports = () => {
   const upload = multer({ storage: storage });
 
   // Route to add a new doctor
-  router.post('/add', async (req, res) => {
+  router.post('/add', authenticateToken, checkPermissions('create', 'Doctor'), async (req, res) => {
     const { name, contact } = req.body;
     if (!name || !contact) {
       return res.status(400).json({ error: 'Name and contact are required' });
@@ -40,7 +43,7 @@ module.exports = () => {
   });
 
   // Route to get all doctors
-  router.get('/', async (req, res) => {
+  router.get('/', authenticateToken, checkPermissions('read', 'Doctor'), async (req, res) => {
     try {
       const [doctors] = await db.execute('SELECT * FROM doctors');
       res.status(200).json(doctors);
@@ -51,7 +54,7 @@ module.exports = () => {
   });
 
   // Delete a doctor
-  router.delete('/:id', async (req, res) => {
+  router.delete('/:id', authenticateToken, checkPermissions('delete', 'Doctor'), async (req, res) => {
     const { id } = req.params;
     var profilePic = '';
     try {
@@ -85,7 +88,7 @@ module.exports = () => {
   });
 
   // Update doctor's profile picture
-router.post('/upload', upload.single('profilePic'), async (req, res) => {
+router.post('/upload', authenticateToken, checkPermissions('upload', 'DoctorPic'), upload.single('profilePic'), async (req, res) => {
   const { id } = req.body;
   const profilePic = req.file ? req.file.filename : null;
 
